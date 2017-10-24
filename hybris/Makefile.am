@@ -6,8 +6,7 @@ endif
 if HAS_ANDROID_5_0_0
 SUBDIRS += libsync
 endif
-SUBDIRS += egl glesv1 glesv2 ui sf input camera vibrator media opencl
-
+SUBDIRS += egl glesv1 glesv2 glesv3 ui sf input camera vibrator media opencl
 if !HAS_ANDROID_8_0_0
 SUBDIRS += wifi
 endif
