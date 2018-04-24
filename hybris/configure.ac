@@ -322,6 +322,8 @@ AC_CONFIG_FILES([
 	hwc2/libhwc2.pc
 	opencl/Makefile
 	opencl/OpenCL.pc
+	vulkan/Makefile
+	vulkan/vulkan.pc
 	tests/Makefile
 ])
 

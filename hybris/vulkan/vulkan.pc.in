@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=@libdir@
+includedir=@includedir@
+
+Name: vulkan
+Description: libhybris Vulkan library
+Version: 1.1.74
+Libs: -L${libdir} -lvulkan
+Cflags: -I${includedir}
