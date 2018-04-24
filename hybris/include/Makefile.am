@@ -47,6 +47,21 @@ vginclude_HEADERS = \
 	VG/vgplatform.h \
 	VG/vgu.h
 
+vulkanincludedir = $(includedir)/vulkan
+vulkaninclude_HEADERS = \
+	vulkan/vk_platform.h \
+	vulkan/vulkan_android.h \
+	vulkan/vulkan_core.h \
+	vulkan/vulkan.h \
+	vulkan/vulkan_ios.h \
+	vulkan/vulkan_macos.h \
+	vulkan/vulkan_vi.h \
+	vulkan/vulkan_wayland.h \
+	vulkan/vulkan_win32.h \
+	vulkan/vulkan_xcb.h \
+	vulkan/vulkan_xlib.h \
+	vulkan/vulkan_xlib_xrandr.h
+
 uiincludedir = $(includedir)/hybris/ui
 uiinclude_HEADERS = \
 	hybris/ui/ui_compatibility_layer.h
