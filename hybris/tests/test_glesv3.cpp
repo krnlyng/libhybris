@@ -221,7 +221,7 @@ int main()
     EGLint attr[] = {       // some attributes to set up our egl-interface
         EGL_BUFFER_SIZE, 32,
         EGL_RENDERABLE_TYPE,
-        EGL_OPENGL_ES2_BIT,
+        0x00000040,
         EGL_NONE
     };
     EGLSurface surface;
