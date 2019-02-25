@@ -38,6 +38,7 @@ protected:
     int busy;
     int fenceFd;
     int status;
+    alloc_device_t *m_alloc;
 };
 
 
