@@ -64,7 +64,7 @@ HYBRIS_IMPLEMENT_FUNCTION2(hwc2, hwc2_error_t, hwc2_compat_display_present,
 
 HYBRIS_IMPLEMENT_FUNCTION5(hwc2, hwc2_error_t, hwc2_compat_display_set_client_target,
                            hwc2_compat_display_t*, uint32_t,
-                           ANativeWindowBuffer_t*, int32_t,
+                           struct ANativeWindowBuffer*, int32_t,
                            android_dataspace_t);
 
 HYBRIS_IMPLEMENT_FUNCTION2(hwc2, hwc2_error_t, hwc2_compat_display_set_power_mode,
@@ -81,7 +81,7 @@ HYBRIS_IMPLEMENT_FUNCTION5(hwc2, hwc2_error_t, hwc2_compat_display_present_or_va
 
 HYBRIS_IMPLEMENT_FUNCTION4(hwc2, hwc2_error_t, hwc2_compat_layer_set_buffer,
                            hwc2_compat_layer_t*, uint32_t,
-                           ANativeWindowBuffer_t*, int32_t);
+                           struct ANativeWindowBuffer*, int32_t);
 HYBRIS_IMPLEMENT_FUNCTION2(hwc2, hwc2_error_t, hwc2_compat_layer_set_blend_mode,
                            hwc2_compat_layer_t*, int);
 HYBRIS_IMPLEMENT_FUNCTION2(hwc2, hwc2_error_t, hwc2_compat_layer_set_color,
