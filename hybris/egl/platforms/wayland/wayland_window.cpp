@@ -214,7 +214,6 @@ WaylandNativeWindow::WaylandNativeWindow(struct wl_egl_window *window, struct wl
 
 WaylandNativeWindow::~WaylandNativeWindow()
 {
-    std::list<WaylandNativeWindowBuffer *>::iterator it = m_bufList.begin();
     destroyBuffers();
     if (frame_callback)
         wl_callback_destroy(frame_callback);
@@ -739,6 +738,8 @@ void WaylandNativeWindow::destroyBuffers()
 {
     TRACE("");
 
+    lock();
+
     std::list<WaylandNativeWindowBuffer*>::iterator it = m_bufList.begin();
     for (; it!=m_bufList.end(); ++it)
     {
@@ -747,6 +748,8 @@ void WaylandNativeWindow::destroyBuffers()
     }
     m_bufList.clear();
     m_freeBufs = 0;
+
+    unlock();
 }
 
 WaylandNativeWindowBuffer *WaylandNativeWindow::addBuffer() {
@@ -774,10 +777,12 @@ int WaylandNativeWindow::setBufferCount(int cnt) {
 
     TRACE("cnt:%d", cnt);
 
-    if (m_bufList.size() == cnt)
-        return NO_ERROR;
-
     lock();
+
+    if (m_bufList.size() == cnt) {
+	unlock();
+        return NO_ERROR;
+    }
 
     if (m_bufList.size() > cnt) {
         /* Decreasing buffer count, remove from beginning */

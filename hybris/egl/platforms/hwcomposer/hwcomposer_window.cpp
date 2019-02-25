@@ -146,6 +146,8 @@ void HWComposerNativeWindow::destroyBuffers()
 {
     TRACE("");
 
+    pthread_mutex_lock(&m_mutex);
+
     std::vector<HWComposerNativeWindowBuffer*>::iterator it = m_bufList.begin();
     for (; it!=m_bufList.end(); ++it)
     {
@@ -154,6 +156,8 @@ void HWComposerNativeWindow::destroyBuffers()
     }
     m_bufList.clear();
     m_nextBuffer = 0;
+
+    pthread_mutex_unlock(&m_mutex);
 }
 
 
