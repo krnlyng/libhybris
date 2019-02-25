@@ -16,7 +16,8 @@ else
 libgralloc_la_CFLAGS = -DHAS_GRALLOC1_HEADER=0
 endif
 libgralloc_la_CFLAGS += -I$(top_srcdir)/include $(ANDROID_HEADERS_CFLAGS)
-libgralloc_la_CXXFLAGS = -std=gnu++11 -I$(top_srcdir)/include
+# let's avoid changing GrallocUsageConversion.cpp for now:
+libgralloc_la_CXXFLAGS = -std=gnu++11 -I$(top_srcdir)/include/hybris
 if WANT_TRACE
 libgralloc_la_CFLAGS += -DDEBUG
 endif

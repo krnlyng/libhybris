@@ -10,8 +10,6 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := libhwc2_compat_layer
 LOCAL_SRC_FILES := HWC2.cpp ComposerHal.cpp hwc2_compatibility_layer.cpp
 
-LOCAL_C_INCLUDES := ../hybris/include
-
 LOCAL_STATIC_LIBRARIES := \
     libhwcomposer-command-buffer
 
@@ -56,14 +54,14 @@ include $(BUILD_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_MODULE := libhybris-gralloc
 LOCAL_SRC_FILES := tests/hybris-gralloc.c \
-    GrallocUsageConversion.cpp
+    tests/GrallocUsageConversion.cpp
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/tests
+
 LOCAL_SHARED_LIBRARIES := libcutils
 LOCAL_CFLAGS := \
     -DANDROID_VERSION_MAJOR=$(ANDROID_VERSION_MAJOR) \
     -DANDROID_VERSION_MINOR=$(ANDROID_VERSION_MINOR) \
-    -DANDROID_VERSION_PATCH=$(ANDROID_VERSION_PATCH) \
-    -DANDROID_BUILD=1
+    -DANDROID_VERSION_PATCH=$(ANDROID_VERSION_PATCH)
 LOCAL_CFLAGS += -Wno-unused-parameter -UNDEBUG -DHAS_GRALLOC1_HEADER=1
 include $(BUILD_STATIC_LIBRARY)
 
@@ -75,8 +73,7 @@ LOCAL_SHARED_LIBRARIES := libsync liblog libnativewindow
 LOCAL_CFLAGS := \
     -DANDROID_VERSION_MAJOR=$(ANDROID_VERSION_MAJOR) \
     -DANDROID_VERSION_MINOR=$(ANDROID_VERSION_MINOR) \
-    -DANDROID_VERSION_PATCH=$(ANDROID_VERSION_PATCH) \
-    -DANDROID_BUILD=1
+    -DANDROID_VERSION_PATCH=$(ANDROID_VERSION_PATCH)
 LOCAL_CFLAGS += -Wno-unused-parameter -UNDEBUG
 include $(BUILD_STATIC_LIBRARY)
 
