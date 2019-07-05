@@ -132,24 +132,18 @@ static const char* const kAsanLibDirPrefix = "/data/asan";
 
 static const char* const kDefaultLdPaths[] = {
   kSystemLibDir,
-  kVendorLibDir,
   kOdmLibDir,
-  kVendorLibEglDir,
-  kOdmLibEglDir,
+  kVendorLibDir,
   nullptr
 };
 
 static const char* const kAsanDefaultLdPaths[] = {
   kAsanSystemLibDir,
   kSystemLibDir,
-  kAsanVendorLibDir,
-  kVendorLibDir,
   kAsanOdmLibDir,
   kOdmLibDir,
-  kAsanVendorLibEglDir,
-  kVendorLibEglDir,
-  kAsanOdmLibEglDir,
-  kOdmLibEglDir,
+  kAsanVendorLibDir,
+  kVendorLibDir,
   nullptr
 };
 
