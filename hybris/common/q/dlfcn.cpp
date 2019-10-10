@@ -26,6 +26,8 @@
  * SUCH DAMAGE.
  */
 
+#include "hybris_compat.h"
+
 #include "linker.h"
 #include "linker_cfi.h"
 #include "linker_globals.h"
