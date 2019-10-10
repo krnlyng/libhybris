@@ -88,7 +88,6 @@
 
 static std::unordered_map<void*, size_t> g_dso_handle_counters;
 
-static android_namespace_t* g_anonymous_namespace = g_default_namespace;
 static std::unordered_map<std::string, android_namespace_t*> g_exported_namespaces;
 
 static LinkerTypeAllocator<soinfo> g_soinfo_allocator;
@@ -96,6 +95,7 @@ static LinkerTypeAllocator<LinkedListEntry<soinfo>> g_soinfo_links_allocator;
 
 static LinkerTypeAllocator<android_namespace_t> g_namespace_allocator;
 android_namespace_t *g_default_namespace = new (g_namespace_allocator.alloc()) android_namespace_t();
+static android_namespace_t* g_anonymous_namespace = g_default_namespace;
 static LinkerTypeAllocator<LinkedListEntry<android_namespace_t>> g_namespace_list_allocator;
 
 static const char* const kLdConfigArchFilePath = "/system/etc/ld.config." ABI_STRING ".txt";
