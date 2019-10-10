@@ -3450,10 +3450,16 @@ bool soinfo::prelink_image() {
         break;
 
       case DT_HASH:
-        nbucket_ = reinterpret_cast<uint32_t*>(load_bias + d->d_un.d_ptr)[0];
-        nchain_ = reinterpret_cast<uint32_t*>(load_bias + d->d_un.d_ptr)[1];
-        bucket_ = reinterpret_cast<uint32_t*>(load_bias + d->d_un.d_ptr + 8);
-        chain_ = reinterpret_cast<uint32_t*>(load_bias + d->d_un.d_ptr + 8 + nbucket_ * 4);
+        ElfW(Addr) base;
+        if(d->d_un.d_ptr > load_bias)
+          base = d->d_un.d_ptr;
+        else
+          base = load_bias + d->d_un.d_ptr;
+
+        nbucket_ = reinterpret_cast<uint32_t*>(base)[0];
+        nchain_ = reinterpret_cast<uint32_t*>(base)[1];
+        bucket_ = reinterpret_cast<uint32_t*>(base + 8);
+        chain_ = reinterpret_cast<uint32_t*>(base+ 8 + nbucket_ * 4);
         break;
 
       case DT_GNU_HASH:
