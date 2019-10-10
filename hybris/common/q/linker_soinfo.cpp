@@ -55,7 +55,7 @@ int get_application_target_sdk_version();
 soinfo::soinfo(android_namespace_t* ns, const char* realpath,
                const struct stat* file_stat, off64_t file_offset,
                int rtld_flags) {
-  memset(this, 0, sizeof(*this));
+//  memset(this, 0, sizeof(*this));
 
   if (realpath != nullptr) {
     realpath_ = realpath;
