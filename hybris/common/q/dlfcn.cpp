@@ -327,7 +327,7 @@ static soinfo* __libdl_info = nullptr;
 
 // This is used by the dynamic linker. Every process gets these symbols for free.
 soinfo* get_libdl_info(const char* linker_path, const soinfo& linker_si) {
-  CHECK((linker_si.flags_ & FLAG_GNU_HASH) != 0);
+  //CHECK((linker_si.flags_ & FLAG_GNU_HASH) != 0);
 
   if (__libdl_info == nullptr) {
     __libdl_info = new (__libdl_info_buf) soinfo(g_default_namespace, linker_path, nullptr, 0, 0);
