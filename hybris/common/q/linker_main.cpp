@@ -776,6 +776,20 @@ bionic_tls* __allocate_temp_bionic_tls() {
 }
 #endif
 
+static const char* get_executable_path() {
+  static std::string executable_path;
+  if (executable_path.empty()) {
+    char path[PATH_MAX];
+    ssize_t path_len = readlink("/proc/self/exe", path, sizeof(path));
+    if (path_len == -1 || path_len >= static_cast<ssize_t>(sizeof(path))) {
+      async_safe_fatal("readlink('/proc/self/exe') failed: %s", strerror(errno));
+    }
+    executable_path = std::string(path, path_len);
+  }
+
+  return executable_path.c_str();
+}
+
 void* (*_get_hooked_symbol)(const char *sym, const char *requester);
 void *(*_create_wrapper)(const char *symbol, void *function, int wrapper_type);
 #ifdef WANT_ARM_TRACING
@@ -808,7 +822,7 @@ extern "C" void android_linker_init(int sdk_version, void* (*get_hooked_symbol)(
     set_application_target_sdk_version(sdk_version);
 
   _get_hooked_symbol = get_hooked_symbol;
- //_linker_enable_gdb_support = enable_linker_gdb_support;
+  _linker_enable_gdb_support = enable_linker_gdb_support;
 
   soinfo tmp_linker_so(nullptr, nullptr, nullptr, 0, 0);
   generate_tmpsoinfo(tmp_linker_so);
@@ -820,7 +834,7 @@ extern "C" void android_linker_init(int sdk_version, void* (*get_hooked_symbol)(
 
   DEBUG("sdk_version %d\n", sdk_version);
 
-  //init_default_namespaces(get_executable_path());
+  init_default_namespaces(get_executable_path());
   DEBUG("init_default_namespaces %d\n", sdk_version);
 
 
