@@ -4152,6 +4152,7 @@ static std::string get_ld_config_file_path(const char* executable_path) {
 std::vector<android_namespace_t*> init_default_namespaces(const char* executable_path) {
   g_default_namespace->set_name("(default)");
 
+#if DISABLED_FOR_HYBRIS_SUPPORT
   soinfo* somain = solist_get_somain();
 
   const char *interp = phdr_table_get_interpreter_name(somain->phdr, somain->phnum,
@@ -4161,6 +4162,7 @@ std::vector<android_namespace_t*> init_default_namespaces(const char* executable
   g_is_asan = bname != nullptr &&
               (strcmp(bname, "linker_asan") == 0 ||
                strcmp(bname, "linker_asan64") == 0);
+#endif
 
   const Config* config = nullptr;
 
