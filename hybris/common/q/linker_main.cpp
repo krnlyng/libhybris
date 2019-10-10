@@ -761,6 +761,7 @@ static void generate_tmpsoinfo(soinfo& tmp_linker_so) {
   //tmp_linker_so.call_constructors();
 }
 
+#if 0
 bionic_tls* __allocate_temp_bionic_tls() {
   size_t allocation_size = __BIONIC_ALIGN(sizeof(bionic_tls), PAGE_SIZE);
   void* allocation = mmap(nullptr, allocation_size,
@@ -773,6 +774,7 @@ bionic_tls* __allocate_temp_bionic_tls() {
  }
   return static_cast<bionic_tls*>(allocation);
 }
+#endif
 
 void* (*_get_hooked_symbol)(const char *sym, const char *requester);
 void *(*_create_wrapper)(const char *symbol, void *function, int wrapper_type);
@@ -822,6 +824,6 @@ extern "C" void android_linker_init(int sdk_version, void* (*get_hooked_symbol)(
   DEBUG("init_default_namespaces %d\n", sdk_version);
 
 
-  __get_tls()[9] =  __get_thread()->bionic_tls = __allocate_temp_bionic_tls();
-  DEBUG("bionic_tls = %p\n", __get_thread()->bionic_tls);
+  //__get_tls()[9] =  __get_thread()->bionic_tls = __allocate_temp_bionic_tls();
+  //DEBUG("bionic_tls = %p\n", __get_thread()->bionic_tls);
 }
