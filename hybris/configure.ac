@@ -36,20 +36,6 @@ AC_SUBST([LT_AGE])
 AC_CHECK_LIB(dl, dlopen, dummy=yes, AC_MSG_ERROR(dynamic linking loader is required))
 AC_CHECK_LIB(rt, clock_gettime, dummy=yes, AC_MSG_ERROR(librt is required))
 
-ac_save_CXXFLAGS="$CXXFLAGS"
-CXXFLAGS="$CXXFLAGS -std=c++14"
-AC_LANG_PUSH([C++])
-
-AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],
-  [[]])],
-  [ac_cxx_warn_stdcxx14=1], [ac_cxx_warn_stdcxx14=0])
-
-AS_IF([test $ac_cxx_warn_stdcxx -ne 0],
-  [AC_MSG_RESULT(['$CXX' supports -stdcxx14])])
-
-AC_LANG_POP([C++])
-CXXFLAGS="$ac_save_CXXFLAGS"
-
 AC_ARG_ENABLE(debug,
   [  --enable-debug            Enable debug build (default=disabled)],
   [debug=$enableval],
