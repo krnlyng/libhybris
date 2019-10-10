@@ -317,7 +317,7 @@ soinfo* get_libdl_info(const char* linker_path, const soinfo& linker_si) {
   CHECK((linker_si.flags_ & FLAG_GNU_HASH) != 0);
 
   if (__libdl_info == nullptr) {
-    __libdl_info = new (__libdl_info_buf) soinfo(&g_default_namespace, linker_path, nullptr, 0, 0);
+    __libdl_info = new (__libdl_info_buf) soinfo(g_default_namespace, linker_path, nullptr, 0, 0);
     __libdl_info->flags_ |= (FLAG_LINKED | FLAG_GNU_HASH);
     __libdl_info->strtab_ = linker_si.strtab_;
     __libdl_info->symtab_ = linker_si.symtab_;

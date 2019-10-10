@@ -148,7 +148,7 @@ static void parse_path(const char* path, const char* delimiters,
 static void parse_LD_LIBRARY_PATH(const char* path) {
   std::vector<std::string> ld_libary_paths;
   parse_path(path, ":", &ld_libary_paths);
-  g_default_namespace.set_ld_library_paths(std::move(ld_libary_paths));
+  g_default_namespace->set_ld_library_paths(std::move(ld_libary_paths));
 }
 
 static void parse_LD_PRELOAD(const char* path) {
@@ -171,7 +171,7 @@ static void add_vdso() {
     return;
   }
 
-  soinfo* si = soinfo_alloc(&g_default_namespace, "[vdso]", nullptr, 0, 0);
+  soinfo* si = soinfo_alloc(g_default_namespace, "[vdso]", nullptr, 0, 0);
 
   si->phdr = reinterpret_cast<ElfW(Phdr)*>(reinterpret_cast<char*>(ehdr_vdso) + ehdr_vdso->e_phoff);
   si->phnum = ehdr_vdso->e_phnum;
@@ -373,7 +373,7 @@ static ElfW(Addr) linker_main(KernelArgumentBlock& args, const char* exe_to_load
   INFO("[ Linking executable \"%s\" ]", exe_path.c_str());
 
   // Initialize the main exe's soinfo.
-  soinfo* si = soinfo_alloc(&g_default_namespace,
+  soinfo* si = soinfo_alloc(g_default_namespace,
                             exe_path.c_str(), &exe_info.file_stat,
                             0, RTLD_GLOBAL);
   somain = si;
@@ -429,7 +429,7 @@ static ElfW(Addr) linker_main(KernelArgumentBlock& args, const char* exe_to_load
   si->set_dt_flags_1(si->get_dt_flags_1() | DF_1_GLOBAL);
   // ... and add it to all other linked namespaces
   for (auto linked_ns : namespaces) {
-    if (linked_ns != &g_default_namespace) {
+    if (linked_ns != g_default_namespace) {
       linked_ns->add_soinfo(somain);
       somain->add_secondary_namespace(linked_ns);
     }
@@ -454,7 +454,7 @@ static ElfW(Addr) linker_main(KernelArgumentBlock& args, const char* exe_to_load
   size_t needed_libraries_count = needed_library_name_list.size();
 
   if (needed_libraries_count > 0 &&
-      !find_libraries(&g_default_namespace,
+      !find_libraries(g_default_namespace,
                       si,
                       needed_library_names,
                       needed_libraries_count,
@@ -717,7 +717,7 @@ __linker_init_post_relocation(KernelArgumentBlock& args, soinfo& tmp_linker_so) 
   // get correct libdl_info we need to call constructors
   // before get_libdl_info().
   sonext = solist = solinker = get_libdl_info(kLinkerPath, tmp_linker_so);
-  g_default_namespace.add_soinfo(solinker);
+  g_default_namespace->add_soinfo(solinker);
   init_link_map_head(*solinker, kLinkerPath);
 
   ElfW(Addr) start_address = linker_main(args, exe_to_load);

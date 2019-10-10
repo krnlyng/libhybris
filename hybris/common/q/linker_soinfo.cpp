@@ -649,7 +649,7 @@ android_namespace_t* soinfo::get_primary_namespace() {
     return primary_namespace_;
   }
 
-  return &g_default_namespace;
+  return g_default_namespace;
 }
 
 void soinfo::add_secondary_namespace(android_namespace_t* secondary_ns) {
