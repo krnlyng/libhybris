@@ -44,7 +44,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],
   [[]])],
   [ac_cxx_warn_stdcxx14=1], [ac_cxx_warn_stdcxx14=0])
 
-AS_IF([test $ac_cxx_warn_narrowing -ne 0],
+AS_IF([test $ac_cxx_warn_stdcxx -ne 0],
   [AC_MSG_RESULT(['$CXX' supports -stdcxx14])])
 
 AC_LANG_POP([C++])
