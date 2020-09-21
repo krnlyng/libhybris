@@ -2382,9 +2382,9 @@ unsigned __linker_init(unsigned **elfdata) {
 }
 
 #ifdef WANT_ARM_TRACING
-void android_linker_init(int sdk_version, void *(get_hooked_symbol)(const char*, const char*), int enable_linker_gdb_support, void *(create_wrapper)(const char*, void*, int)) {
+void android_linker_init(int sdk_version, void* (*get_hooked_symbol)(const char*, const char*), int enable_linker_gdb_support, void *(*create_wrapper)(const char*, void*, int), uintptr_t *(*cfi_init)(uintptr_t)) {
 #else
-void android_linker_init(int sdk_version, void *(get_hooked_symbol)(const char*, const char*), int enable_linker_gdb_support) {
+void android_linker_init(int sdk_version, void* (*get_hooked_symbol)(const char*, const char*), int enable_linker_gdb_support, uintptr_t *(*cfi_init)(uintptr_t)) {
 #endif
    (void) sdk_version;
    _get_hooked_symbol = get_hooked_symbol;

@@ -94,9 +94,9 @@ static int locale_inited = 0;
 static hybris_hook_cb hook_callback = NULL;
 
 #ifdef WANT_ARM_TRACING
-static void (*_android_linker_init)(int sdk_version, void* (*get_hooked_symbol)(const char*, const char*), int enable_linker_gdb_support, void *(_create_wrapper)(const char*, void*, int)) = NULL;
+static void (*_android_linker_init)(int sdk_version, void* (*get_hooked_symbol)(const char*, const char*), int enable_linker_gdb_support, void *(_create_wrapper)(const char*, void*, int), uintptr_t *(*cfi_init)(uintptr_t)) = NULL;
 #else
-static void (*_android_linker_init)(int sdk_version, void* (*get_hooked_symbol)(const char*, const char*), int enable_linker_gdb_support) = NULL;
+static void (*_android_linker_init)(int sdk_version, void* (*get_hooked_symbol)(const char*, const char*), int enable_linker_gdb_support, uintptr_t *(*cfi_init)(uintptr_t)) = NULL;
 #endif
 
 void *(*_android_dlopen)(const char* filename, int flag) = NULL;
@@ -2675,8 +2675,7 @@ void _hybris_hook_free(void *ptr)
     free(ptr);
 }
 
-uintptr_t* __cfi_init(uintptr_t shadow_base);
-size_t __cfi_shadow_size();
+size_t __cfi_shadow_size(void);
 void __cfi_slowpath(uint64_t CallSiteTypeId, void* Ptr);
 void __cfi_slowpath_diag(uint64_t CallSiteTypeId, void* Ptr, void* DiagData);
 
@@ -3094,7 +3093,6 @@ static struct _hook hooks_mm[] = {
     HOOK_INDIRECT(scandir),
     HOOK_INDIRECT(scandirat),
     HOOK_TO(scandir64, _hybris_hook_scandir),
-    HOOK_DIRECT_NO_DEBUG(__cfi_init),
     HOOK_DIRECT_NO_DEBUG(__cfi_shadow_size),
     HOOK_DIRECT_NO_DEBUG(__cfi_slowpath),
     HOOK_DIRECT_NO_DEBUG(__cfi_slowpath_diag),
@@ -3277,6 +3275,8 @@ static void* __hybris_load_linker(const char *path)
 
 static int linker_initialized = 0;
 
+uintptr_t __cfi_init(uintptr_t);
+
 static void __hybris_linker_init()
 {
     LOGD("Linker initialization");
@@ -3354,9 +3354,9 @@ static void __hybris_linker_init()
 
     /* Now its time to setup the linker itself */
 #ifdef WANT_ARM_TRACING
-    _android_linker_init(sdk_version, __hybris_get_hooked_symbol, enable_linker_gdb_support, create_wrapper);
+    _android_linker_init(sdk_version, __hybris_get_hooked_symbol, enable_linker_gdb_support, create_wrapper, __cfi_init);
 #else
-    _android_linker_init(sdk_version, __hybris_get_hooked_symbol, enable_linker_gdb_support);
+    _android_linker_init(sdk_version, __hybris_get_hooked_symbol, enable_linker_gdb_support, __cfi_init);
 #endif
 
     if (_android_set_application_target_sdk_version) {

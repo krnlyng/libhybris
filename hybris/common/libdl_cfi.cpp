@@ -17,6 +17,7 @@
 #include <sys/mman.h>
 
 // begin hybris additions
+#include "logging.h"
 #include <stdint.h>
 
 #ifndef PAGE_SIZE
@@ -54,6 +55,7 @@ static struct {
 // during startup, before libdl.so global constructors, and, on i386, even before __libc_sysinfo is
 // initialized. This function should not do any system calls.
 extern "C" uintptr_t* __cfi_init(uintptr_t shadow_base) {
+  HYBRIS_DEBUG_LOG("lidl_cfi", "__cfi_init");
   shadow_base_storage.v = shadow_base;
   static_assert(sizeof(shadow_base_storage) == PAGE_SIZE, "");
   return &shadow_base_storage.v;
@@ -61,6 +63,7 @@ extern "C" uintptr_t* __cfi_init(uintptr_t shadow_base) {
 
 // Returns the size of the CFI shadow mapping, or 0 if CFI is not (yet) used in this process.
 extern "C" size_t __cfi_shadow_size() {
+  HYBRIS_DEBUG_LOG("lidl_cfi", "__cfi_shadow_size");
   return shadow_base_storage.v != 0 ? CFIShadow::kShadowSize : 0;
 }
 
@@ -87,6 +90,7 @@ static uintptr_t cfi_check_addr(uint16_t v, void* Ptr) {
 }
 
 static inline void cfi_slowpath_common(uint64_t CallSiteTypeId, void* Ptr, void* DiagData) {
+  HYBRIS_DEBUG_LOG("lidl_cfi", "__cfi_slowpath_common");
   uint16_t v = shadow_load(Ptr);
   switch (v) {
     case CFIShadow::kInvalidShadow:

@@ -192,6 +192,8 @@ bool CFIShadowWriter::AddLibrary(soinfo* si) {
   return true;
 }
 
+extern "C" uintptr_t (*_cfi_init)(uintptr_t);
+
 // Pass the shadow mapping address to libdl.so. In return, we get an pointer to the location
 // libdl.so uses to store the address.
 bool CFIShadowWriter::NotifyLibDl(soinfo* solist, uintptr_t p) {
@@ -201,7 +203,11 @@ bool CFIShadowWriter::NotifyLibDl(soinfo* solist, uintptr_t p) {
     return false;
   }
 
+#ifdef DISABLED_FOR_HYBRIS_SUPPORT
   uintptr_t cfi_init = soinfo_find_symbol(libdl, "__cfi_init");
+#else
+  uintptr_t cfi_init = (uintptr_t)_cfi_init;
+#endif
   CHECK(cfi_init != 0);
   shadow_start = reinterpret_cast<uintptr_t* (*)(uintptr_t)>(cfi_init)(p);
   CHECK(shadow_start != nullptr);
@@ -211,7 +217,9 @@ bool CFIShadowWriter::NotifyLibDl(soinfo* solist, uintptr_t p) {
 }
 
 bool CFIShadowWriter::MaybeInit(soinfo* new_si, soinfo* solist) {
+#ifdef DISABLED_FOR_HYBRIS_SUPPORT
   CHECK(initial_link_done);
+#endif
   CHECK(shadow_start == nullptr);
   // Check if CFI shadow must be initialized at this time.
   bool found = false;
@@ -246,10 +254,12 @@ bool CFIShadowWriter::MaybeInit(soinfo* new_si, soinfo* solist) {
 }
 
 bool CFIShadowWriter::AfterLoad(soinfo* si, soinfo* solist) {
+#ifdef DISABLED_FOR_HYBRIS_SUPPORT
   if (!initial_link_done) {
     // Too early.
     return true;
   }
+#endif
 
   if (shadow_start == nullptr) {
     return MaybeInit(si, solist);
