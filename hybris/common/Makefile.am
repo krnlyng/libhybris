@@ -29,6 +29,11 @@ libhybris_common_la_SOURCES = \
 	legacy_properties/properties.c \
 	legacy_properties/cache.c
 
+libhybris_common_la_LIBADD = libcfi_slowpath.la
+noinst_LTLIBRARIES = libcfi_slowpath.la
+libcfi_slowpath_la_SOURCES = libdl_cfi.cpp
+libcfi_slowpath_la_CPPFLAGS = -std=c++14
+
 if WANT_RUNTIME_PROPERTY_CACHE
 libhybris_common_la_SOURCES += \
         legacy_properties/runtime_cache.c

@@ -122,6 +122,7 @@ bool (*_android_init_anonymous_namespace)(const char* shared_libs_sonames,
                                       const char* library_search_path) = NULL;
 void (*_android_dlwarning)(void* obj, void (*f)(void*, const char*)) = NULL;
 void *(*_android_get_exported_namespace)(const char* name) = NULL;
+void *(*_android___cfi_fail)(uint64_t CallSiteTypeId, void* Ptr, void *DiagData, void *CallerPc) = NULL;
 
 /* TODO:
 *  - Check if the int arguments at attr_set/get match the ones at Android
@@ -2674,6 +2675,11 @@ void _hybris_hook_free(void *ptr)
     free(ptr);
 }
 
+uintptr_t* __cfi_init(uintptr_t shadow_base);
+size_t __cfi_shadow_size();
+void __cfi_slowpath(uint64_t CallSiteTypeId, void* Ptr);
+void __cfi_slowpath_diag(uint64_t CallSiteTypeId, void* Ptr, void* DiagData);
+
 #if !defined(cfree)
 #define cfree free
 #endif
@@ -3088,6 +3094,10 @@ static struct _hook hooks_mm[] = {
     HOOK_INDIRECT(scandir),
     HOOK_INDIRECT(scandirat),
     HOOK_TO(scandir64, _hybris_hook_scandir),
+    HOOK_DIRECT_NO_DEBUG(__cfi_init),
+    HOOK_DIRECT_NO_DEBUG(__cfi_shadow_size),
+    HOOK_DIRECT_NO_DEBUG(__cfi_slowpath),
+    HOOK_DIRECT_NO_DEBUG(__cfi_slowpath_diag),
 };
 
 
@@ -3340,6 +3350,7 @@ static void __hybris_linker_init()
     _android_init_anonymous_namespace = dlsym(linker_handle, "android_init_anonymous_namespace");
     _android_dlwarning = dlsym(linker_handle, "android_dlwarning");
     _android_get_exported_namespace = dlsym(linker_handle, "android_get_exported_namespace");
+    _android___cfi_fail = dlsym(linker_handle, "android___cfi_fail");
 
     /* Now its time to setup the linker itself */
 #ifdef WANT_ARM_TRACING
@@ -3569,6 +3580,16 @@ struct android_namespace_t* android_get_exported_namespace(const char* name)
     return _android_get_exported_namespace(name);
 }
 
+void android___cfi_fail(uint64_t CallSiteTypeId, void* Ptr, void *DiagData, void *CallerPc) {
+    ENSURE_LINKER_IS_LOADED();
+
+    if (!_android___cfi_fail) {
+        return;
+    }
+
+    _android___cfi_fail(CallSiteTypeId, Ptr, DiagData, CallerPc);
+}
+
 void* hybris_dlopen(const char* filename, int flag)
 {
     return android_dlopen(filename, flag);
@@ -3658,5 +3679,10 @@ void hybris_dlwarning(void* obj, void (*f)(void*, const char*))
 void* hybris_get_exported_namespace(const char* name)
 {
     return android_get_exported_namespace(name);
+}
+
+void _hybris___cfi_fail(uint64_t CallSiteTypeId, void* Ptr, void *DiagData, void *CallerPc)
+{
+    android___cfi_fail(CallSiteTypeId, Ptr, DiagData, CallerPc);
 }
 

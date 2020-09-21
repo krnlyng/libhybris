@@ -232,7 +232,7 @@ android_namespace_t* __android_get_exported_namespace(const char* name) {
   return get_exported_namespace(name);
 }
 
-void __cfi_fail(uint64_t CallSiteTypeId, void* Ptr, void *DiagData, void *CallerPc) {
+void __android___cfi_fail(uint64_t CallSiteTypeId, void* Ptr, void *DiagData, void *CallerPc) {
   CFIShadowWriter::CfiFail(CallSiteTypeId, Ptr, DiagData, CallerPc);
 }
 
@@ -310,7 +310,7 @@ static ElfW(Sym) g_libdl_symtab[] = {
   ELFW(SYM_INITIALIZER)(357, &__android_create_namespace, 1),
   ELFW(SYM_INITIALIZER)(391, &__dlvsym, 1),
   ELFW(SYM_INITIALIZER)(407, &__android_dlwarning, 1),
-  ELFW(SYM_INITIALIZER)(434, &__cfi_fail, 1),
+  ELFW(SYM_INITIALIZER)(434, &__android___cfi_fail, 1),
   ELFW(SYM_INITIALIZER)(452, &__android_link_namespaces, 1),
   ELFW(SYM_INITIALIZER)(485, &__android_get_exported_namespace, 1),
 #if defined(__arm__)
@@ -461,6 +461,10 @@ void android_dlwarning(void* obj, void (*f)(void*, const char*)) {
 
 struct android_namespace_t* android_get_exported_namespace(const char* name) {
   return __android_get_exported_namespace(name);
+}
+
+void android___cfi_fail(uint64_t CallSiteTypeId, void* Ptr, void *DiagData, void *CallerPc) {
+    __android___cfi_fail(CallSiteTypeId, Ptr, DiagData, CallerPc);
 }
 }
 
