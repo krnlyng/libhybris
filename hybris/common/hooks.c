@@ -2449,6 +2449,16 @@ static int _hybris_hook_strcmp(const char *s1, const char *s2)
     if ( s1 == NULL || s2 == NULL)
         return -1;
 
+#ifdef __LP64__
+    if ( (strcmp(s1, program_invocation_name) == 0) && (strcmp(s2, "usap64") == 0) ) {
+        return 0;
+    }
+#else
+    if ( (strcmp(s1, program_invocation_name) == 0) && (strcmp(s2, "usap32") == 0) ) {
+        return 0;
+    }
+#endif
+
     return strcmp(s1, s2);
 }
 
