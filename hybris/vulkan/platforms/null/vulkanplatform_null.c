@@ -40,12 +40,14 @@
 
 static VkResult (*_vkEnumerateInstanceExtensionProperties)(const char *pLayerName, uint32_t *pPropertyCount, VkExtensionProperties *pProperties) = NULL;
 static VkResult (*_vkCreateInstance)(const VkInstanceCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkInstance *pInstance) = NULL;
+static VkResult (*_vkQueuePresentKHR)(VkQueue queue, const VkPresentInfoKHR *pPresentInfo) = NULL;
 static PFN_vkVoidFunction (*_vkGetInstanceProcAddr)(VkInstance instance, const char *pName) = NULL;
 
 static void _init_vulkan_funcs()
 {
 	if (_vkEnumerateInstanceExtensionProperties != NULL
 		&& _vkCreateInstance != NULL
+		&& _vkQueuePresentKHR != NULL
 		&& _vkGetInstanceProcAddr != NULL)
 		return;
 
@@ -56,6 +58,10 @@ static void _init_vulkan_funcs()
 	_vkCreateInstance = (VkResult (*)(const VkInstanceCreateInfo *, const VkAllocationCallbacks *, VkInstance *))
 			hybris_android_vulkan_dlsym("vkCreateInstance");
 	assert(_vkCreateInstance);
+
+	_vkQueuePresentKHR = (VkResult (*)(VkQueue, const VkPresentInfoKHR *))
+			hybris_android_vulkan_dlsym("vkQueuePresentKHR");
+	assert(_vkQueuePresentKHR);
 
 	_vkGetInstanceProcAddr = (PFN_vkVoidFunction (*)(VkInstance, const char *))
 			hybris_android_vulkan_dlsym("vkGetInstanceProcAddr");
@@ -78,8 +84,33 @@ VkResult nullws_vkCreateInstance(const VkInstanceCreateInfo *pCreateInfo, const 
 	return (*_vkCreateInstance)(pCreateInfo, pAllocator, pInstance);
 }
 
+#ifdef WANT_WAYLAND
+static VkResult nullws_vkCreateWaylandSurfaceKHR(VkInstance instance,
+		const VkWaylandSurfaceCreateInfoKHR* pCreateInfo,
+		const VkAllocationCallbacks* pAllocator,
+		VkSurfaceKHR* pSurface)
+{
+	return VK_ERROR_OUT_OF_HOST_MEMORY;
+}
+
+static VkBool32 nullws_vkGetPhysicalDeviceWaylandPresentationSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, struct wl_display* display)
+{
+	return VK_FALSE;
+}
+#endif
+
 static void nullws_vkDestroySurfaceKHR(VkInstance instance, VkSurfaceKHR surface, const VkAllocationCallbacks* pAllocator)
 {
+}
+
+static VkResult nullws_vkWaitForFences(VkDevice device, uint32_t fenceCount, const VkFence* pFences, VkBool32 waitAll, uint64_t timeout)
+{
+	return VK_SUCCESS;
+}
+
+static VkResult nullws_vkQueuePresentKHR(VkQueue queue, const VkPresentInfoKHR* pPresentInfo)
+{
+	return (*_vkQueuePresentKHR)(queue, pPresentInfo);
 }
 
 static PFN_vkVoidFunction nullws_vkGetDeviceProcAddr(VkDevice device, const char *procname)
@@ -102,7 +133,13 @@ struct ws_module ws_module_info = {
 
 	nullws_vkEnumerateInstanceExtensionProperties,
 	nullws_vkCreateInstance,
+#ifdef WANT_WAYLAND
+	nullws_vkCreateWaylandSurfaceKHR,
+	nullws_vkGetPhysicalDeviceWaylandPresentationSupportKHR,
+#endif
 	nullws_vkDestroySurfaceKHR,
+	nullws_vkWaitForFences,
+	nullws_vkQueuePresentKHR,
 	nullws_vkGetDeviceProcAddr,
 	nullws_vkGetInstanceProcAddr,
 	nullws_vkSetInstanceProcAddrFunc,

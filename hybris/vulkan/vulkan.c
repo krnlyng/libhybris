@@ -28,6 +28,7 @@
 
 #include <hybris/common/binding.h>
 #include <hybris/common/floating_point_abi.h>
+#include "config.h"
 #include "helper.h"
 #include "logging.h"
 #include "ws.h"
@@ -77,6 +78,7 @@ struct ws_vulkan_interface hybris_vulkan_interface = {
 
 static PFN_vkVoidFunction (*_vkGetDeviceProcAddr)(VkDevice device, const char *procname) = NULL;
 static PFN_vkVoidFunction (*_vkGetInstanceProcAddr)(VkInstance instance, const char* pName) = NULL;
+static VkResult (*_vkGetPhysicalDeviceSurfaceCapabilitiesKHR)(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkSurfaceCapabilitiesKHR* pSurfaceCapabilities) = NULL;
 
 /* Use IDLOAD approach also for float functions, since vulkan uses the aapcs-vfp calling convention even on android */
 
@@ -115,9 +117,47 @@ VkResult vkEnumerateInstanceExtensionProperties(const char* pLayerName, uint32_t
 	return ws_vkEnumerateInstanceExtensionProperties(pLayerName, pPropertyCount, pProperties);
 }
 
+#ifdef WANT_WAYLAND
+VkResult vkCreateWaylandSurfaceKHR(VkInstance instance,
+		const VkWaylandSurfaceCreateInfoKHR* pCreateInfo,
+		const VkAllocationCallbacks* pAllocator,
+		VkSurfaceKHR* pSurface)
+{
+	return ws_vkCreateWaylandSurfaceKHR(instance, pCreateInfo, pAllocator, pSurface);
+}
+
+VkResult vkGetPhysicalDeviceSurfaceCapabilitiesKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkSurfaceCapabilitiesKHR* pSurfaceCapabilities)
+{
+	if (_vkGetPhysicalDeviceSurfaceCapabilitiesKHR == NULL) {
+		HYBRIS_DLSYSM(vulkan, &_vkGetPhysicalDeviceSurfaceCapabilitiesKHR, "vkGetPhysicalDeviceSurfaceCapabilitiesKHR");
+	}
+
+	VkResult ret = (*_vkGetPhysicalDeviceSurfaceCapabilitiesKHR)(physicalDevice, surface, pSurfaceCapabilities);
+	// Surface size will be determined by the extent of a swapchain targeting the surface
+	pSurfaceCapabilities->currentExtent = (VkExtent2D){0xFFFFFFFF, 0xFFFFFFFF};
+
+	return ret;
+}
+
+VkBool32 vkGetPhysicalDeviceWaylandPresentationSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, struct wl_display* display)
+{
+	return ws_vkGetPhysicalDeviceWaylandPresentationSupportKHR(physicalDevice, queueFamilyIndex, display);
+}
+#endif
+
 void vkDestroySurfaceKHR(VkInstance instance, VkSurfaceKHR surface, const VkAllocationCallbacks* pAllocator)
 {
 	ws_vkDestroySurfaceKHR(instance, surface, pAllocator);
+}
+
+VkResult vkWaitForFences(VkDevice device, uint32_t fenceCount, const VkFence* pFences, VkBool32 waitAll, uint64_t timeout)
+{
+	return ws_vkWaitForFences(device, fenceCount, pFences, waitAll, timeout);
+}
+
+VkResult vkQueuePresentKHR(VkQueue queue, const VkPresentInfoKHR* pPresentInfo)
+{
+	return ws_vkQueuePresentKHR(queue, pPresentInfo);
 }
 
 PFN_vkVoidFunction vkGetDeviceProcAddr(VkDevice device, const char* pName)
@@ -125,6 +165,11 @@ PFN_vkVoidFunction vkGetDeviceProcAddr(VkDevice device, const char* pName)
 	if (_vkGetDeviceProcAddr == NULL) {
 		HYBRIS_DLSYSM(vulkan, &_vkGetDeviceProcAddr, "vkGetDeviceProcAddr");
 	}
+
+	if (!strcmp(pName, "vkQueuePresentKHR")) {
+		return (PFN_vkVoidFunction)vkQueuePresentKHR;
+	}
+
 	PFN_vkVoidFunction addr = NULL;
 
 	if (addr == NULL) {
@@ -151,6 +196,8 @@ PFN_vkVoidFunction vkGetInstanceProcAddr(VkInstance instance, const char* pName)
 		return (PFN_vkVoidFunction)vkDestroySurfaceKHR;
 	} else if (!strcmp(pName, "vkGetDeviceProcAddr")) {
 		return (PFN_vkVoidFunction)vkGetDeviceProcAddr;
+	} else if (!strcmp(pName, "vkGetPhysicalDeviceSurfaceCapabilitiesKHR")) {
+		return (PFN_vkVoidFunction)vkGetPhysicalDeviceSurfaceCapabilitiesKHR;
 	}
 
 	PFN_vkVoidFunction addr = NULL;
@@ -334,7 +381,7 @@ VULKAN_IDLOAD(vkGetDeviceMemoryOpaqueCaptureAddress);
 
 //VULKAN_IDLOAD(vkDestroySurfaceKHR);
 VULKAN_IDLOAD(vkGetPhysicalDeviceSurfaceSupportKHR);
-VULKAN_IDLOAD(vkGetPhysicalDeviceSurfaceCapabilitiesKHR);
+//VULKAN_IDLOAD(vkGetPhysicalDeviceSurfaceCapabilitiesKHR);
 VULKAN_IDLOAD(vkGetPhysicalDeviceSurfaceFormatsKHR);
 VULKAN_IDLOAD(vkGetPhysicalDeviceSurfacePresentModesKHR);
 

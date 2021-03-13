@@ -328,6 +328,7 @@ AC_CONFIG_FILES([
 	vulkan/platforms/common/Makefile
 	vulkan/platforms/common/hybris-vulkan-platform.pc
 	vulkan/platforms/null/Makefile
+	vulkan/platforms/wayland/Makefile
 	tests/Makefile
 ])
 
