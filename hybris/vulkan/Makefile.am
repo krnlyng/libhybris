@@ -1,3 +1,4 @@
+SUBDIRS = platforms
 
 lib_LTLIBRARIES = \
 	libvulkan.la

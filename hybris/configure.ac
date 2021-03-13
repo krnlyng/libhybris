@@ -324,6 +324,10 @@ AC_CONFIG_FILES([
 	opencl/OpenCL.pc
 	vulkan/Makefile
 	vulkan/vulkan.pc
+	vulkan/platforms/Makefile
+	vulkan/platforms/common/Makefile
+	vulkan/platforms/common/hybris-vulkan-platform.pc
+	vulkan/platforms/null/Makefile
 	tests/Makefile
 ])
 

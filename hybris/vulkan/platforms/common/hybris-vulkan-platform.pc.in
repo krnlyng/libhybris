@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=@libdir@
+includedir=@includedir@
+
+Name: hybris-vulkan-platform
+Description: libhybris vulkan platform library
+Version: @VERSION@
+Requires: @ANDROID_HEADERS_PKGCONFIG@
+Libs: -L${libdir} -lhybris-common -lhybris-vulkanplatformcommon
+Cflags: -I${includedir} -I${includedir}/hybris/vulkanplatformcommon @ANDROID_HEADERS_CFLAGS@
+
