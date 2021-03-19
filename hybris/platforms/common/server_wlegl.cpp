@@ -23,8 +23,8 @@
 #include <android-config.h>
 #include <cstring>
 
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
+//#include <EGL/egl.h>
+//#include <EGL/eglext.h>
 
 extern "C" {
 #include <cutils/native_handle.h>

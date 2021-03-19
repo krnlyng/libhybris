@@ -340,7 +340,7 @@ int BaseNativeWindow::_query(const struct ANativeWindow* window, int what, int* 
 			return NO_ERROR;
 #endif
 	}
-	TRACE("EGL error: unkown window attribute! %i", what);
+	TRACE("NativeWindow error: unknown window attribute! %i", what);
 	*value = 0;
 	return BAD_VALUE;
 }

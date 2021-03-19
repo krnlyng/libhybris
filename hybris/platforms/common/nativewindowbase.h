@@ -4,7 +4,6 @@
 /* for ICS window.h */
 #include <string.h>
 #include <system/window.h>
-#include <EGL/egl.h>
 #include "support.h"
 #include <stdarg.h>
 #include <assert.h>
@@ -43,13 +42,6 @@ private:
  **/
 class BaseNativeWindow : public ANativeWindow
 {
-public:
-	operator EGLNativeWindowType()
-	{
-		EGLNativeWindowType ret = reinterpret_cast<EGLNativeWindowType>(static_cast<ANativeWindow *>(this));
-		return ret;
-	}
-
 protected:
 	BaseNativeWindow();
 	virtual ~BaseNativeWindow();

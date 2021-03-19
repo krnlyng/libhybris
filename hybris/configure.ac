@@ -279,6 +279,8 @@ AC_CONFIG_FILES([
 	common/n/Makefile
 	common/o/Makefile
 	common/q/Makefile
+	platforms/Makefile
+	platforms/common/Makefile
 	egl/egl.pc
 	egl/Makefile
 	egl/platforms/Makefile
@@ -323,7 +325,7 @@ AC_CONFIG_FILES([
 	tests/Makefile
 ])
 
-AM_COND_IF([WANT_WAYLAND_EGL], [AC_CONFIG_FILES([egl/platforms/common/wayland-egl.pc])])
+AM_COND_IF([WANT_WAYLAND_EGL], [AC_CONFIG_FILES([platforms/common/wayland-egl.pc])])
 AC_OUTPUT
 
 echo

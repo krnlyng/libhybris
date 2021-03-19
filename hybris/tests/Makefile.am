@@ -46,6 +46,7 @@ test_egl_CXXFLAGS = \
 	-I$(top_srcdir)/include \
 	$(ANDROID_HEADERS_CFLAGS) \
 	-I$(top_srcdir)/common \
+	-I$(top_srcdir)/platforms/common \
 	-I$(top_srcdir)/egl/platforms/common \
 	-I$(top_srcdir)/egl/platforms/hwcomposer \
 	-I$(top_srcdir)/libsync \
@@ -81,6 +82,7 @@ test_glesv2_CXXFLAGS = \
 	-I$(top_srcdir)/include \
 	$(ANDROID_HEADERS_CFLAGS) \
 	-I$(top_srcdir)/common \
+	-I$(top_srcdir)/platforms/common \
 	-I$(top_srcdir)/egl/platforms/common \
 	-I$(top_srcdir)/egl/platforms/hwcomposer \
 	-I$(top_srcdir)/libsync \
@@ -113,6 +115,7 @@ test_glesv3_CXXFLAGS = \
 	-I$(top_srcdir)/include \
 	$(ANDROID_HEADERS_CFLAGS) \
 	-I$(top_srcdir)/common \
+	-I$(top_srcdir)/platforms/common \
 	-I$(top_srcdir)/egl/platforms/common \
 	-I$(top_srcdir)/egl/platforms/hwcomposer \
 	-I$(top_srcdir)/libsync \
@@ -145,6 +148,7 @@ test_hwcomposer_CXXFLAGS = \
 	-I$(top_srcdir)/include \
 	$(ANDROID_HEADERS_CFLAGS) \
 	-I$(top_srcdir)/common \
+	-I$(top_srcdir)/platforms/common \
 	-I$(top_srcdir)/egl/platforms/common \
 	-I$(top_srcdir)/egl/platforms/hwcomposer \
 	-I$(top_srcdir)/libsync \
@@ -232,6 +236,7 @@ test_camera_CXXFLAGS = \
 	-I$(top_srcdir)/include \
 	$(ANDROID_HEADERS_CFLAGS) \
 	-I$(top_srcdir)/common \
+	-I$(top_srcdir)/platforms/common \
 	-I$(top_srcdir)/egl/platforms/common \
 	-I$(top_srcdir)/egl/platforms/hwcomposer \
 	-I$(top_srcdir)/libsync \

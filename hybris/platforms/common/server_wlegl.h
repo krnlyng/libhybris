@@ -23,8 +23,8 @@
 #ifndef SERVER_WLEGL_H
 #define SERVER_WLEGL_H
 
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
+//#include <EGL/egl.h>
+//#include <EGL/eglext.h>
 #include <system/window.h>
 
 extern "C" {
