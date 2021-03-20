@@ -817,14 +817,14 @@ int WaylandNativeWindow::setBuffersDimensions(int width, int height) {
     return NO_ERROR;
 }
 
-int WaylandNativeWindow::setUsage(int usage) {
+int WaylandNativeWindow::setUsage(uint64_t usage) {
     if ((usage | GRALLOC_USAGE_HW_TEXTURE) != m_usage)
     {
-        TRACE("old-usage:x%x new-usage:x%x", m_usage, usage);
+        TRACE("old-usage:x%" PRIx64 " new-usage:x%" PRIx64, m_usage, usage);
         m_usage = usage | GRALLOC_USAGE_HW_TEXTURE;
         /* Buffers will be re-allocated when dequeued */
     } else {
-        TRACE("usage:x%x", usage);
+        TRACE("usage:x%" PRIx64, usage);
     }
     return NO_ERROR;
 }

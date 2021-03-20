@@ -180,7 +180,7 @@ protected:
     virtual unsigned int transformHint() const;
     virtual unsigned int getUsage() const;
     // perform calls
-    virtual int setUsage(int usage);
+    virtual int setUsage(uint64_t usage);
     virtual int setBuffersFormat(int format);
     virtual int setBuffersDimensions(int width, int height);
     virtual int setBufferCount(int cnt);
@@ -204,7 +204,7 @@ private:
     int m_format;
     unsigned int m_defaultWidth;
     unsigned int m_defaultHeight;
-    unsigned int m_usage;
+    uint64_t m_usage;
     struct android_wlegl *m_android_wlegl;
     pthread_mutex_t mutex;
     pthread_cond_t cond;
