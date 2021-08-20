@@ -341,13 +341,13 @@ static void *_hybris_hook_malloc(size_t size)
 #ifdef WANT_ADRENO_QUIRKS
 static void *_hybris_hook_malloc45(size_t size)
 {
-    TRACE_HOOK("size %zu", size);
+    TRACE_HOOK("malloc45 size %zu", size);
 
-    if (size == 4) size = 5;
+    if (getenv("TEST_MALLOC") && size == 4) size = 5;
 
     void *res = malloc(size);
 
-    TRACE_HOOK("res %p", res);
+    TRACE_HOOK("malloc45 res %p", res);
 
     return res;
 }
